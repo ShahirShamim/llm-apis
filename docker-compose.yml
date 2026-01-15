@@ -1,0 +1,20 @@
+services:
+  llm-api:
+    build: ./api
+    container_name: llm-api
+    restart: always
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - API_KEY=${API_KEY}
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: always
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
